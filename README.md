@@ -320,15 +320,21 @@ Maximum Likelihood Estimation (MLE) is a statistical method for estimating the p
 ### Theoretical Framework:
 
 1. **Likelihood Function:**
-   - Given a statistical model with an unknown parameter \(\theta\) that generates a data sample \(X\), the likelihood function \(L(\theta | X)\) is defined as the probability of observing the actual data \(X\) given the parameter \(\theta\), i.e., \(L(\theta | X) = P(X | \theta)\).
-   - In many cases, particularly in the context of i.i.d. (independent and identically distributed) samples, the likelihood function is the product of individual probabilities: \(L(\theta | X) = \prod_{i=1}^{n} P(x_i | \theta)\), where \(x_i\) are the individual observations.
+   - Given a statistical model with an unknown parameter $\theta$ that generates a data sample $X$, the likelihood function $L(\theta | X)$ is defined as the probability of observing the actual data $X$ given the parameter $\theta$, i.e., $L(\theta | X) = P(X | \theta)$.
+   - In many cases, particularly in the context of i.i.d. (independent and identically distributed) samples, the likelihood function is the product of individual probabilities:
+     
+$$
+L(\theta | X) = \prod_{i=1}^{n} P(x_i | \theta)
+$$
 
-2. **Maximum Likelihood Estimation:**
-   - The MLE of \(\theta\), denoted as \(\hat{\theta}_{MLE}\), is the value of \(\theta\) that maximizes \(L(\theta | X)\) over all possible values of \(\theta\).
-   - In practice, it's common to work with the natural logarithm of the likelihood function, known as the log-likelihood. The log-likelihood \(\ell(\theta | X) = \ln L(\theta | X)\) is easier to work with mathematically (turning products into sums), and its maximum is at the same point as the maximum of the likelihood function.
+where $x_i$ are the individual observations.
 
-3. **Optimization:**
-   - Finding the MLE typically involves taking the derivative of the log-likelihood with respect to \(\theta\), setting it to zero, and solving for \(\theta\). This process might require numerical optimization methods, especially for complex models or when the likelihood equation cannot be solved analytically.
+3. **Maximum Likelihood Estimation:**
+   - The MLE of $\theta$, denoted as $\hat{\theta}_{MLE}$, is the value of $\theta$ that maximizes $L(\theta | X)$ over all possible values of $\theta$.
+   - In practice, it's common to work with the natural logarithm of the likelihood function, known as the log-likelihood. The log-likelihood $\ell(\theta | X) = \ln L(\theta | X)$ is easier to work with mathematically (turning products into sums), and its maximum is at the same point as the maximum of the likelihood function.
+
+4. **Optimization:**
+   - Finding the MLE typically involves taking the derivative of the log-likelihood with respect to $\theta$, setting it to zero, and solving for $\theta$. This process might require numerical optimization methods, especially for complex models or when the likelihood equation cannot be solved analytically.
 
 ### MLE in Machine Learning:
 
