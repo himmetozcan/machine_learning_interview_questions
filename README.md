@@ -115,9 +115,7 @@ Remember, the choice of method to handle class imbalance is highly contingent on
 
 ---
 
-Organizing these questions in a learning path requires structuring them from basic foundational concepts to more complex and specialized topics. Here's a suggested order for someone who wants to build upon one concept to understand the next:
-
-**1.** What is the difference between Parametric and Non-parametric models? Provide examples of scenarios where each would be applicable.
+**2.** What is the difference between Parametric and Non-parametric models? Provide examples of scenarios where each would be applicable.
 
 In machine learning, the distinction between parametric and non-parametric models is fundamental, as it influences not only the approach to training and inference but also the assumptions the model makes about the underlying data and system it's meant to represent. 
 
@@ -158,7 +156,7 @@ In practice, it's also common to use semi-parametric approaches, which combine b
 
 ---
 
-**2.** Explain the Bias-Variance Tradeoff in machine learning models. Can you provide an example of when you would prefer a model with higher bias over one with higher variance?
+**3.** Explain the Bias-Variance Tradeoff in machine learning models. Can you provide an example of when you would prefer a model with higher bias over one with higher variance?
 
 The Bias-Variance Tradeoff is a central concept in machine learning that offers a formal understanding of the balance between underfitting and overfitting in model predictions. It's intrinsically linked to the generalization capabilities of machine learning models.
 
@@ -244,8 +242,39 @@ Remember, the goal is to achieve a balance where you have acceptable bias and va
 ---
 
 
-3. What is the role of the cost function in machine learning? Can you discuss a scenario where you would need to design a custom cost function instead of using a predefined one?
-   - **Fundamental Concept**: Introduction to optimization in model training.
+**3.** What is the role of the cost function in machine learning? Can you discuss a scenario where you would need to design a custom cost function instead of using a predefined one?
+
+The cost function, also known as the loss function or objective function, is a fundamental component in machine learning and plays several critical roles:
+
+1. **Quantifying Error:** It quantifies the discrepancy or error between the predicted values by the model and the actual values in the dataset. This quantification is crucial because it provides a measurable way to understand how well (or poorly) the model is performing.
+
+2. **Learning Signal:** During the training process, particularly in supervised learning, the cost function provides a signal that guides the optimization algorithm (like gradient descent). By calculating the gradient of the cost function, the training algorithm can adjust the model's parameters in a direction that minimally decreases error.
+
+3. **Model Evaluation and Comparison:** It serves as a criterion for evaluating the performance of different models. By comparing the cost functions' values for different models or different sets of hyperparameters, practitioners can select the model that performs best.
+
+4. **Regularization:** Cost functions can also include terms that penalize complexity to help prevent overfitting. This is where concepts like L1 and L2 regularization come into play, adding a component to the cost function that depends on the weights of the model.
+
+While there are many standard cost functions available (like mean squared error, cross-entropy, etc.), there are scenarios where designing a custom cost function becomes necessary:
+
+**Scenario for Custom Cost Function: Imbalanced Classification with High Cost of Misclassification**
+
+Imagine you're building a machine learning model to predict whether a patient requires an urgent medical intervention based on various health indicators. Your dataset is imbalanced — only a small fraction of patients require urgent care. Furthermore, the cost of false negatives (failing to identify patients who need urgent care) is very high, as it could potentially result in loss of life, while the cost of false positives (unnecessarily flagging patients) is comparatively low.
+
+In this case, standard cost functions like cross-entropy might not be suitable because they treat all types of errors equally, whereas you want your model to be particularly sensitive to reducing false negatives. Here, you might create a custom cost function that assigns a higher penalty to false negatives.
+
+One approach could be to use a weighted form of cross-entropy that has an additional term or multiplier for the class of interest (patients requiring urgent intervention). The custom loss function would look something like this:
+
+```python
+def custom_loss(y_true, y_pred):
+    penalty = 10  # This is a hyperparameter and would need to be determined based on the specific context.
+    loss = -torch.mean(penalty * y_true * torch.log(y_pred) + (1 - y_true) * torch.log(1 - y_pred))
+    return loss
+```
+
+This function increases the loss contribution from false negatives, making them more "costly" to the model. As a result, during training, the model will focus more on correctly classifying the minority class, potentially at the expense of increasing false positives, which is acceptable in this context due to the asymmetry in the costs associated with different types of classification errors.
+
+In practice, the design of such a custom cost function would involve domain knowledge, experimentation, and validation to ensure it aligns with the real-world costs and benefits, and ultimately improves the decision-making process.
+
 
 ---
 
