@@ -279,12 +279,77 @@ In practice, the design of such a custom cost function would involve domain know
 ---
 
 4. How does Gradient Descent work, and how do Stochastic and Mini-batch Gradient Descent improve upon the basic idea?
-   - **Fundamental Concept**: Optimization algorithms in machine learning.
+
+Gradient Descent is a first-order iterative optimization algorithm for finding the minimum of a function. In the context of machine learning, this function is usually a loss function that measures the discrepancy between the predictions of the neural network and the actual observed training targets. Here's a more detailed breakdown:
+
+1. **Working of Gradient Descent:**
+
+   - **Objective:** The main objective is to minimize the loss function \(J(\theta)\) parameterized by the model's parameters \(\theta\), which can be the weights and biases in the context of neural networks.
+
+   - **Gradient Calculation:** The gradient of the loss is calculated, which gives the direction of the steepest ascent. The key here is that the negative gradient points in the direction of the steepest descent (i.e., towards the minimum of the function). Mathematically, for each parameter \(\theta_i\), this involves computing \(\frac{\partial J(\theta)}{\partial \theta_i}\).
+
+   - **Parameter Update:** The parameters are then updated by taking a step in the opposite direction of the gradient. If \(\alpha\) is the learning rate (a hyperparameter that controls the step size), the update rule will be \(\theta_i = \theta_i - \alpha \frac{\partial J(\theta)}{\partial \theta_i}\). The learning rate is crucial here: too small, and the convergence will be slow; too large, and the updates might overshoot the minimum, possibly leading to divergence.
+
+   - **Convergence:** This process is iterated for a certain number of epochs or until the change in loss between iterations is below a certain threshold (convergence).
+
+2. **Stochastic Gradient Descent (SGD):**
+
+   - **Idea:** Traditional (or "batch") gradient descent uses the entire training dataset to compute the gradient at each step, which can be extremely slow and is infeasible for datasets that don't fit in memory. Stochastic Gradient Descent (SGD) mitigates this by using only a single randomly picked training example (or instance) to calculate the gradient and update the parameters for every step.
+
+   - **Variance and Speed:** This introduces a lot more variance into the gradient estimate at each step, which means that the path towards the minimum can be noisy and oscillate. However, this variance can have the beneficial effect of helping the model escape local minima, and the fact that it's computationally lighter can lead to much faster convergence overall, especially in very large datasets.
+
+   - **Convergence:** Due to the noisiness of the updates, the convergence of SGD is usually not as stable as batch gradient descent, and it might keep oscillating around the minimum. To mitigate this, it's common to gradually decrease the learning rate over time, a technique known as "learning rate annealing."
+
+3. **Mini-batch Gradient Descent:**
+
+   - **Idea:** Mini-batch Gradient Descent is a compromise between batch gradient descent and SGD. Instead of the entire dataset (as in batch GD) or a single example (as in SGD), mini-batch GD computes the gradient and updates the parameters based on a small randomly-selected subset of the training data (a "mini-batch").
+
+   - **Efficiency and Hardware Utilization:** Mini-batches are typically sized to fit well with the memory limitations of the hardware being used (like GPUs) and to optimize vectorized operations, which can be significantly faster than their non-vectorized counterparts. This method aims to blend the advantages of SGD's ability to escape local minima with the stability of batch GD, and it's the most common training algorithm used in practice for deep learning.
+
+   - **Noise and Convergence:** Like SGD, mini-batch GD introduces some noise into the optimization, which can prevent convergence to a local minimum, but it's less noisy than pure SGD. The size of the mini-batch (another hyperparameter to be tuned) controls the trade-off between the amount of noise and the speed of convergence.
+
+In essence, Stochastic and Mini-batch Gradient Descent improve upon the basic idea of Gradient Descent by increasing computational efficiency, reducing memory usage, and adding a beneficial amount of noise that can help escape local minima. These methods are more scalable to large datasets and are better suited for modern hardware, thanks to their compatibility with batch processing and parallel computation.
+
 
 ---
 
 5. Can you explain the concept of maximum likelihood estimation (MLE)? How is it used in machine learning?
-   - **Fundamental Concept**: Basic statistical inference in parameter estimation.
+
+Maximum Likelihood Estimation (MLE) is a statistical method for estimating the parameters of a model. The core principle of MLE is to determine the parameter values that maximize the likelihood function, which measures how well the model explains the observed data. In more technical terms, MLE seeks the parameter values that make the observed data most probable under the specified model.
+
+### Theoretical Framework:
+
+1. **Likelihood Function:**
+   - Given a statistical model with an unknown parameter \(\theta\) that generates a data sample \(X\), the likelihood function \(L(\theta | X)\) is defined as the probability of observing the actual data \(X\) given the parameter \(\theta\), i.e., \(L(\theta | X) = P(X | \theta)\).
+   - In many cases, particularly in the context of i.i.d. (independent and identically distributed) samples, the likelihood function is the product of individual probabilities: \(L(\theta | X) = \prod_{i=1}^{n} P(x_i | \theta)\), where \(x_i\) are the individual observations.
+
+2. **Maximum Likelihood Estimation:**
+   - The MLE of \(\theta\), denoted as \(\hat{\theta}_{MLE}\), is the value of \(\theta\) that maximizes \(L(\theta | X)\) over all possible values of \(\theta\).
+   - In practice, it's common to work with the natural logarithm of the likelihood function, known as the log-likelihood. The log-likelihood \(\ell(\theta | X) = \ln L(\theta | X)\) is easier to work with mathematically (turning products into sums), and its maximum is at the same point as the maximum of the likelihood function.
+
+3. **Optimization:**
+   - Finding the MLE typically involves taking the derivative of the log-likelihood with respect to \(\theta\), setting it to zero, and solving for \(\theta\). This process might require numerical optimization methods, especially for complex models or when the likelihood equation cannot be solved analytically.
+
+### MLE in Machine Learning:
+
+In machine learning, MLE is a frequentist approach used for model fitting and plays a critical role in various contexts:
+
+1. **Parameter Estimation:**
+   - In supervised learning, MLE can be used to estimate the parameters of the model (e.g., weights in a neural network) that maximize the likelihood of the training data. This often corresponds to minimizing a cost function, like the mean squared error for regression or cross-entropy for classification, which can be derived from the negative log-likelihood.
+
+2. **Probabilistic Models:**
+   - MLE is fundamental in training probabilistic models, like Gaussian Mixture Models or Hidden Markov Models. For these models, parameters are estimated such that the probability of the observed data is maximized under the model.
+
+3. **Generative Learning Algorithms:**
+   - In generative algorithms like Naive Bayes, MLE is used to estimate the parameters that describe the data distribution for each class in the dataset, which are then used for making predictions.
+
+4. **Natural Language Processing:**
+   - MLE is widely used in NLP applications, for instance, to determine the probabilities of word occurrence or sequence of words in language modeling.
+
+5. **Model Comparison:**
+   - MLE provides a framework for model comparison through likelihood ratio tests or information criteria like AIC (Akaike Information Criterion) and BIC (Bayesian Information Criterion), which are based on the likelihood function.
+
+While MLE has broad applicability and solid theoretical foundations, it's not without limitations. For instance, MLE can overfit to the training data, especially when the model is complex, and the sample size is small. This issue stems from the fact that MLE does not regularize parameter estimates or naturally account for model complexity, and thus, separate regularization techniques or model selection criteria are often needed. Additionally, in cases of limited data, Bayesian approaches might be preferred for incorporating prior information about parameters, which MLE does not do.
 
 ---
 
